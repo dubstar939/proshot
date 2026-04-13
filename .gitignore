@@ -1,4 +1,11 @@
 ```
+# Dependencies
+node_modules/
+
+# Build artifacts
+dist/
+
+# Environment
 # Compiled and build artifacts
 *.pyc
 __pycache__/
@@ -17,6 +24,28 @@ venv/
 .env
 .env.local
 .env.*
+
+# Editor/IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.swp
+
+# Compiled files
+*.pyc
+__pycache__/
+
+# Package lock
+package-lock.json
+
+# OS generated files
+.DS_Store
+Thumbs.db
 
 # Build directories
 dist/
