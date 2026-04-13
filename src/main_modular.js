@@ -1,74 +1,117 @@
-import * as THREE from "three";
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+import { Octree } from 'three-mesh-bvh';
 
-// Components
-import { createScene } from "./components/scene";
-import { createCamera, gunMixer } from "./components/camera";
-import { createLights } from "./components/lights";
-import { loadWorld } from "./components/world";
-import { addBgMusic } from "./components/music";
+// Import New Systems
+import { PlayerMovement } from './systems/playerMovement.js';
+import { WeaponSystem } from './systems/weapon.js';
+import { HUDSystem } from './systems/hud.js';
+import { AISpawner } from './systems/ai.js';
+import { GameFlowManager } from './systems/gameFlow.js';
 
-// Systems
-import { createRenderer } from "./systems/renderer";
-import { createStats } from "./systems/stats";
-import { Resizer } from "./systems/resizer";
+let camera, scene, renderer, clock;
+let playerMovement, weaponSystem, hudSystem, gameFlow, aiSpawner;
+let worldOctree;
 
-// Physics & Controls
-import { createPhysics, STEPS_PER_FRAME } from "./systems/physics";
-import { setupControls } from "./systems/controls";
+init();
+animate();
 
-const clock = new THREE.Clock();
-const scene = createScene();
-const { camera, animations } = createCamera(scene); // Destructure to get the camera instance and animations
-const { fillLight1, directionalLight } = createLights();
-scene.add(fillLight1, directionalLight);
+function init() {
+    const container = document.getElementById('container') || document.body;
 
-const container = document.getElementById("container");
-const renderer = createRenderer(animate);
-container.appendChild(renderer.domElement);
-const stats = createStats();
-container.appendChild(stats.domElement);
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 1.6, 5);
 
-// Initialize Physics & Controls
-const {
-  playerCollider,
-  playerVelocity,
-  playerDirection,
-  updatePlayer,
-  updateSpheres,
-  throwBall,
-  worldOctree,
-} = createPhysics(scene, animations); // Pass animations to createPhysics
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x111111);
+    scene.fog = new THREE.Fog(0x111111, 10, 50);
 
-const applyControls = setupControls(
-  camera, // Pass the correct camera instance
-  playerVelocity,
-  throwBall,
-  playerDirection
-);
+    // Lights
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 1.5);
+    hemiLight.position.set(0, 20, 0);
+    scene.add(hemiLight);
 
-// Load World
-loadWorld(scene, worldOctree);
+    const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
+    dirLight.position.set(5, 10, 7);
+    dirLight.castShadow = true;
+    scene.add(dirLight);
 
-// Add Background Sound Effects
-addBgMusic();
+    // Renderer
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    container.appendChild(renderer.domElement);
 
-// Animation Loop
+    clock = new THREE.Clock();
 
-function animate() {
-  const deltaTime = Math.min(0.05, clock.getDelta()) / STEPS_PER_FRAME;
+    // Initialize Systems
+    hudSystem = new HUDSystem();
+    gameFlow = new GameFlowManager();
+    
+    // Wait for user input to start (click to lock pointer)
+    document.addEventListener('click', () => {
+        if (gameFlow.state === 'MENU') {
+            document.body.requestPointerLock();
+            gameFlow.startGame();
+        }
+    });
 
-  for (let i = 0; i < STEPS_PER_FRAME; i++) {
-    applyControls(deltaTime, playerCollider.onFloor, camera);
-    updatePlayer(deltaTime, worldOctree, camera);
-    updateSpheres(deltaTime, worldOctree);
-  }
-
-  // ✅ Update gun animations
-  if (gunMixer) gunMixer.update(deltaTime);
-
-  renderer.render(scene, camera);
-  stats.update();
+    loadWorld();
+    
+    window.addEventListener('resize', onWindowResize);
 }
 
-// Resizer
-Resizer(camera, renderer);
+function loadWorld() {
+    const loader = new GLTFLoader().setPath('models/').setMeshoptDecoder(MeshoptDecoder);
+    
+    loader.load('collision-world.glb', (gltf) => {
+        const model = gltf.scene;
+        model.traverse(c => {
+            if (c.isMesh) {
+                c.castShadow = true;
+                c.receiveShadow = true;
+                // Simple material override for demo
+                if (!c.material) c.material = new THREE.MeshStandardMaterial({ color: 0x888888 });
+            }
+        });
+        scene.add(model);
+        
+        // Build Octree for physics
+        worldOctree = new Octree().fromGraphNode(model);
+        
+        // Init Player & Weapons after world load
+        playerMovement = new PlayerMovement(camera, renderer.domElement);
+        weaponSystem = new WeaponSystem(camera, scene, null); // Audio system placeholder
+        
+        // Init AI
+        aiSpawner = new AISpawner(scene, camera);
+        aiSpawner.startWave();
+        
+    }, undefined, (e) => console.error(e));
+}
+
+function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+function animate() {
+    requestAnimationFrame(animate);
+
+    const delta = clock.getDelta();
+    const time = clock.getElapsedTime();
+
+    if (gameFlow.state === 'PLAYING') {
+        if (playerMovement) playerMovement.update(delta, worldOctree);
+        if (weaponSystem) weaponSystem.update(delta, time);
+        if (aiSpawner) aiSpawner.update(delta, time);
+    }
+
+    renderer.render(scene, camera);
+}
