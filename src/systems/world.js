@@ -1,30 +1,51 @@
 /**
- * PROSHOT WORLD SYSTEMS (D1-D4)
- * Handles Interactables, Triggers, Checkpoints, and Level Config
+ * World System
+ * Handles Interactables, Triggers, Checkpoints, and Level Configuration
  */
 
 import * as THREE from 'three';
 
-export class WorldSystem {
-    constructor(scene, camera, player) {
+/**
+ * Material types for surface detection
+ * @enum {number}
+ */
+const MaterialType = {
+    CONCRETE: 0,
+    METAL: 1,
+    WOOD: 2,
+    GRASS: 3,
+    WATER: 4
+};
+
+/**
+ * World System - Manages environment interactions and level logic
+ */
+class WorldSystem {
+    /**
+     * Creates an instance of WorldSystem
+     * @param {THREE.Scene} scene - The game scene
+     * @param {THREE.Camera} camera - The player camera
+     * @param {PlayerMovement} player - Player reference (optional, set later)
+     */
+    constructor(scene, camera, player = null) {
         this.scene = scene;
         this.camera = camera;
         this.player = player;
         
-        // D1: Interactables
-        this.interactables = new Map(); // id -> { mesh, type, state, config }
+        // Interactables
+        this.interactables = new Map();
         this.raycaster = new THREE.Raycaster();
         this.interactionDistance = 3.0;
         this.currentInteractable = null;
         
-        // D3: Trigger Volumes
-        this.triggers = []; // { mesh, callback, active }
+        // Triggers
+        this.triggers = [];
         
-        // D2: Checkpoints
+        // Checkpoints
         this.checkpoints = [];
         this.activeCheckpoint = null;
         
-        // D4: Level Config
+        // Level Configuration
         this.levelConfig = {
             id: 'default',
             name: 'ProShot Arena',
@@ -33,10 +54,10 @@ export class WorldSystem {
             difficulty: 'normal'
         };
 
-        this.initInput();
+        this._initInput();
     }
 
-    initInput() {
+    _initInput() {
         // Bind interaction key (E)
         document.addEventListener('keydown', (e) => {
             if (e.code === 'KeyE') this.tryInteract();
@@ -247,3 +268,7 @@ export class WorldSystem {
         return null;
     }
 }
+
+// Static exports
+WorldSystem.MaterialType = MaterialType;
+export { WorldSystem, MaterialType };

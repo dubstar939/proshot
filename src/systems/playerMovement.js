@@ -4,6 +4,7 @@ export class PlayerMovement {
     constructor(camera, domElement, config = {}) {
         this.camera = camera;
         this.domElement = domElement;
+        this.octree = null;
         
         // Configuration
         this.config = {
@@ -47,10 +48,14 @@ export class PlayerMovement {
         this.moveRight = false;
         this.canJump = false;
         
-        this.initInput();
+        this._initInput();
+    }
+    
+    setOctree(octree) {
+        this.octree = octree;
     }
 
-    initInput() {
+    _initInput() {
         const onKeyDown = (event) => {
             switch (event.code) {
                 case 'ArrowUp': case 'KeyW': this.moveForward = true; break;
@@ -67,7 +72,7 @@ export class PlayerMovement {
                 case 'ShiftLeft': this.isSprinting = true; break;
                 case 'ControlLeft': 
                     if (!this.isCrouching && !this.isSliding && this.isGrounded) {
-                        this.startCrouch();
+                        this._startCrouch();
                     }
                     break;
             }
@@ -80,7 +85,7 @@ export class PlayerMovement {
                 case 'ArrowDown': case 'KeyS': this.moveBackward = false; break;
                 case 'ArrowRight': case 'KeyD': this.moveRight = false; break;
                 case 'ShiftLeft': this.isSprinting = false; break;
-                case 'ControlLeft': this.stopCrouch(); break;
+                case 'ControlLeft': this._stopCrouch(); break;
             }
         };
 
@@ -88,7 +93,7 @@ export class PlayerMovement {
         document.addEventListener('keyup', onKeyUp);
     }
 
-    startCrouch() {
+    _startCrouch() {
         this.isCrouching = true;
         // Slide logic if moving fast
         const currentSpeed = new THREE.Vector2(this.velocity.x, this.velocity.z).length();
@@ -98,7 +103,7 @@ export class PlayerMovement {
         }
     }
 
-    stopCrouch() {
+    _stopCrouch() {
         this.isCrouching = false;
         this.isSliding = false;
     }
@@ -189,7 +194,7 @@ export class PlayerMovement {
         // Apply sway subtly to rotation or position if needed
     }
 
-    triggerFallDamage(amount) {
+    _triggerFallDamage(amount) {
         console.log(`Fall damage taken: ${amount}`);
         // Dispatch event for HUD/GameFlow to handle
         window.dispatchEvent(new CustomEvent('playerDamage', { detail: { amount, type: 'fall' } }));

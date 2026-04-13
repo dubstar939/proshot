@@ -154,3 +154,8 @@ export class AudioSystem {
         };
         animate();
     }
+    
+    update(deltaTime) {
+        // Update audio system if needed (for future spatial audio updates)
+    }
+}

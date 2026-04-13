@@ -1,4 +1,4 @@
-**
+/**
  * PROSHOT OPTIMIZATION SYSTEM (H1-H3)
  * Object Pooling, Culling Helpers, Memory Safety
  */

@@ -1,5 +1,9 @@
 import * as THREE from 'three';
 
+/**
+ * AI State Machine States
+ * @enum {string}
+ */
 const AI_STATE = {
     IDLE: 'idle',
     PATROL: 'patrol',
@@ -9,16 +13,34 @@ const AI_STATE = {
     DEAD: 'dead'
 };
 
-export class EnemyAI {
+/**
+ * Individual Enemy AI Controller
+ * Handles state machine, movement, and combat behaviors for a single enemy
+ */
+class EnemyAI {
+    /**
+     * Creates an instance of EnemyAI
+     * @param {THREE.Scene} scene - The game scene
+     * @param {PlayerMovement} player - Player reference
+     * @param {number} difficulty - Difficulty multiplier (default: 1)
+     */
     constructor(scene, player, difficulty = 1) {
         this.scene = scene;
         this.player = player;
         this.difficulty = difficulty;
         
+        // AI Components
         this.mesh = null;
         this.state = AI_STATE.IDLE;
+        this.weapons = null;
+        this.gameFlow = null;
+        
+        // Stats
         this.health = 100 * difficulty;
+        this.maxHealth = this.health;
         this.speed = 3.0;
+        
+        // Behavior parameters
         this.detectionRange = 20;
         this.attackRange = 15;
         this.patrolPoints = [];
@@ -26,8 +48,25 @@ export class EnemyAI {
         this.waitTime = 0;
         this.lastAttackTime = 0;
         this.attackCooldown = 1.0;
+        this.searchTarget = null;
         
         this.createEnemyMesh();
+    }
+    
+    /**
+     * Set weapons system reference for AI interactions
+     * @param {WeaponSystem} weapons
+     */
+    setWeapons(weapons) {
+        this.weapons = weapons;
+    }
+    
+    /**
+     * Set game flow reference for scoring/events
+     * @param {GameFlow} gameFlow
+     */
+    setGameFlow(gameFlow) {
+        this.gameFlow = gameFlow;
     }
 
     createEnemyMesh() {
@@ -153,44 +192,245 @@ export class EnemyAI {
     }
 }
 
-export class AISpawner {
+/**
+ * AI Spawner & Wave Manager
+ * Manages enemy spawning, wave progression, and difficulty scaling
+ */
+class AISystem {
+    /**
+     * Creates an instance of AISystem
+     * @param {THREE.Scene} scene - The game scene
+     * @param {PlayerMovement} player - Player reference
+     */
     constructor(scene, player) {
         this.scene = scene;
         this.player = player;
+        
+        // References to other systems (set via setters)
+        this.weapons = null;
+        this.gameFlow = null;
+        
+        // Wave management
         this.enemies = [];
-        this.wave = 1;
-        this.enemiesPerWave = 5;
+        this.currentWave = 1;
+        this.baseEnemiesPerWave = 5;
         this.spawnTimer = 0;
-        this.active = true;
+        this.spawnDelay = 2.0;
+        this.isActive = true;
+        this.isWaveActive = false;
+        
+        // Configuration
+        this.difficultyMultiplier = 1.0;
+        this.maxWaves = 10;
+    }
+    
+    /**
+     * Set weapons system reference for AI interactions
+     * @param {WeaponSystem} weapons
+     */
+    setWeapons(weapons) {
+        this.weapons = weapons;
+        // Also update existing enemies
+        this.enemies.forEach(enemy => enemy.setWeapons(weapons));
+    }
+    
+    /**
+     * Set game flow reference for scoring/events
+     * @param {GameFlow} gameFlow
+     */
+    setGameFlow(gameFlow) {
+        this.gameFlow = gameFlow;
+        // Also update existing enemies
+        this.enemies.forEach(enemy => enemy.setGameFlow(gameFlow));
     }
 
-    startWave() {
-        console.log(`Starting Wave ${this.wave}`);
+    /**
+     * Start a new wave of enemies
+     * @param {number} waveNumber - Optional wave number (defaults to next)
+     */
+    startWave(waveNumber = null) {
+        if (waveNumber) {
+            this.currentWave = waveNumber;
+        }
+        
+        this.isWaveActive = true;
         this.spawnTimer = 0;
+        
+        const enemyCount = this.getEnemiesForWave(this.currentWave);
+        console.log(`[AISystem] Starting Wave ${this.currentWave} with ${enemyCount} enemies`);
+        
+        window.dispatchEvent(new CustomEvent('waveStart', { 
+            detail: { wave: this.currentWave, enemyCount } 
+        }));
     }
 
-    update(delta, time) {
-        if (!this.active) return;
-        
-        // Spawn logic
-        if (this.enemies.length < this.enemiesPerWave * this.wave && this.spawnTimer <= 0) {
-            const enemy = new EnemyAI(this.scene, this.player, 1 + (this.wave * 0.1));
-            this.enemies.push(enemy);
-            this.spawnTimer = 2.0; // Delay between spawns
-        }
-        this.spawnTimer -= delta;
+    /**
+     * Calculate number of enemies for a given wave
+     * @param {number} wave - Wave number
+     * @returns {number} Number of enemies
+     */
+    getEnemiesForWave(wave) {
+        return Math.floor(this.baseEnemiesPerWave * (1 + wave * 0.2));
+    }
 
-        // Update enemies
-        this.enemies.forEach(e => e.update(delta, time));
-        
-        // Cleanup dead
-        this.enemies = this.enemies.filter(e => e.state !== AI_STATE.DEAD || e.mesh.parent !== null);
+    /**
+     * Get difficulty multiplier for current wave
+     * @returns {number}
+     */
+    getCurrentDifficulty() {
+        return 1 + (this.currentWave * 0.1);
+    }
 
-        // Wave complete check
-        if (this.enemies.length === 0 && this.spawnTimer <= 0) {
-            this.wave++;
-            this.startWave();
-            window.dispatchEvent(new CustomEvent('waveComplete', { detail: { wave: this.wave - 1 } }));
+    /**
+     * Spawn a single enemy
+     * @private
+     */
+    _spawnEnemy() {
+        const difficulty = this.getCurrentDifficulty();
+        const enemy = new EnemyAI(this.scene, this.player, difficulty);
+        
+        // Wire system references
+        if (this.weapons) enemy.setWeapons(this.weapons);
+        if (this.gameFlow) enemy.setGameFlow(this.gameFlow);
+        
+        this.enemies.push(enemy);
+        return enemy;
+    }
+
+    /**
+     * Update all AI systems
+     * @param {number} deltaTime - Time since last frame
+     * @param {number} elapsedTime - Total elapsed time
+     */
+    update(deltaTime, elapsedTime) {
+        if (!this.isActive) return;
+        
+        // Spawn enemies for current wave
+        if (this.isWaveActive) {
+            this._updateSpawning(deltaTime);
         }
+
+        // Update all active enemies
+        this._updateEnemies(deltaTime, elapsedTime);
+        
+        // Cleanup dead enemies
+        this._cleanupDeadEnemies();
+
+        // Check wave completion
+        this._checkWaveCompletion();
+    }
+    
+    /**
+     * Update spawning logic
+     * @private
+     * @param {number} deltaTime
+     */
+    _updateSpawning(deltaTime) {
+        const maxEnemies = this.getEnemiesForWave(this.currentWave);
+        
+        if (this.enemies.length < maxEnemies && this.spawnTimer <= 0) {
+            this._spawnEnemy();
+            this.spawnTimer = this.spawnDelay;
+        }
+        
+        this.spawnTimer -= deltaTime;
+    }
+    
+    /**
+     * Update all active enemies
+     * @private
+     * @param {number} deltaTime
+     * @param {number} elapsedTime
+     */
+    _updateEnemies(deltaTime, elapsedTime) {
+        this.enemies.forEach(enemy => {
+            if (enemy.state !== AI_STATE.DEAD) {
+                enemy.update(deltaTime, elapsedTime);
+            }
+        });
+    }
+    
+    /**
+     * Remove dead enemies from the scene
+     * @private
+     */
+    _cleanupDeadEnemies() {
+        this.enemies = this.enemies.filter(enemy => {
+            return enemy.state !== AI_STATE.DEAD || enemy.mesh?.parent !== null;
+        });
+    }
+    
+    /**
+     * Check if current wave is complete
+     * @private
+     */
+    _checkWaveCompletion() {
+        if (this.enemies.length === 0 && this.spawnTimer <= 0 && this.isWaveActive) {
+            this.isWaveActive = false;
+            
+            window.dispatchEvent(new CustomEvent('waveComplete', { 
+                detail: { wave: this.currentWave } 
+            }));
+            
+            // Auto-start next wave if not at max
+            if (this.currentWave < this.maxWaves) {
+                this.currentWave++;
+                setTimeout(() => this.startWave(), 3000); // 3 second delay between waves
+            } else {
+                console.log('[AISystem] All waves completed!');
+                // Victory condition could be triggered here
+            }
+        }
+    }
+    
+    /**
+     * Get count of active enemies
+     * @returns {number}
+     */
+    getActiveEnemyCount() {
+        return this.enemies.filter(e => e.state !== AI_STATE.DEAD).length;
+    }
+    
+    /**
+     * Get current wave information
+     * @returns {Object} Wave info
+     */
+    getWaveInfo() {
+        return {
+            current: this.currentWave,
+            isActive: this.isWaveActive,
+            enemyCount: this.getActiveEnemyCount(),
+            maxEnemies: this.getEnemiesForWave(this.currentWave)
+        };
+    }
+    
+    /**
+     * Pause AI updates
+     */
+    pause() {
+        this.isActive = false;
+    }
+    
+    /**
+     * Resume AI updates
+     */
+    resume() {
+        this.isActive = true;
+    }
+    
+    /**
+     * Clear all enemies
+     */
+    clearAll() {
+        this.enemies.forEach(enemy => {
+            if (enemy.mesh?.parent) {
+                this.scene.remove(enemy.mesh);
+            }
+        });
+        this.enemies = [];
+        this.isWaveActive = false;
     }
 }
+
+// Export as named exports
+export { AISystem, EnemyAI, AI_STATE };
