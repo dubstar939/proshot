@@ -186,11 +186,10 @@ window.addEventListener('blur', () => {
     gameManager.pauseGame();
   }
 });
-import * as THREE from 'three';
+
+// Additional imports for ProShotGame class
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { Octree } from 'three-mesh-bvh';
-
-// System Imports
 import { PlayerMovement } from './systems/playerMovement.js';
 import { WeaponSystem } from './systems/weapons.js';
 import { HUDSystem } from './systems/hud.js';
