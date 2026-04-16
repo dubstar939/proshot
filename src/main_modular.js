@@ -23,6 +23,17 @@ import { WorldSystem } from "./systems/worldSystem";
 import { UIManager } from "./systems/uiManager";
 import { GameManager, GAME_STATE } from "./systems/gameManager";
 
+// Additional imports for ProShotGame class
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { PlayerMovement } from './systems/playerMovement.js';
+import { WeaponSystem } from './systems/weapons.js';
+import { HUDSystem } from './systems/hud.js';
+import { AISystem } from './systems/ai.js';
+import { GameFlow } from './systems/gameFlow.js';
+import { WorldSystem as WorldSystemModule } from './systems/world.js';
+import { AudioSystem } from './systems/audioPro.js';
+import { OptimizerSystem } from './systems/optimizer.js';
+
 const clock = new THREE.Clock();
 const scene = createScene();
 const { camera, player, gunHolder } = createCamera(scene);
@@ -186,19 +197,6 @@ window.addEventListener('blur', () => {
     gameManager.pauseGame();
   }
 });
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { Octree } from 'three-mesh-bvh';
-
-// System Imports
-import { PlayerMovement } from './systems/playerMovement.js';
-import { WeaponSystem } from './systems/weapons.js';
-import { HUDSystem } from './systems/hud.js';
-import { AISystem } from './systems/ai.js';
-import { GameFlow } from './systems/gameFlow.js';
-import { WorldSystem } from './systems/world.js';
-import { AudioSystem } from './systems/audioPro.js';
-import { OptimizerSystem } from './systems/optimizer.js';
 
 /**
  * Main Game Controller
