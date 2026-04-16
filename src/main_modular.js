@@ -16,8 +16,8 @@ import { setupControls } from "./systems/controls";
 
 // New Game Systems
 import { PlayerController, PLAYER_CONFIG } from "./systems/playerController";
-import { WeaponManager } from "./systems/weaponSystem";
-import { EnemyManager } from "./systems/enemyAI";
+import { WeaponManager } from "./weapons/WeaponManager.js";
+import { EnemyManager } from "./ai/EnemyManager.js";
 import { HealthSystem, DamageManager } from "./systems/healthSystem";
 import { WorldSystem } from "./systems/worldSystem";
 import { UIManager } from "./systems/uiManager";
