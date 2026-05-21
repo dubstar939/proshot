@@ -2,38 +2,59 @@
 # Dependencies
 node_modules/
 
-# Build outputs
+# Build artifacts
 dist/
 build/
-coverage/
-
-# Environment variables
-.env
-.env.local
-.env.*
-
-# IDE specific
-.vscode/
-.idea/
-*.swp
-*.swo
+target/
 
 # Logs
 *.log
 
+# Environment
+.env
+.env.local
+*.env.*
+
+# Editors
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
 # Temporary files
 *.tmp
+*.swp
+*.swo
 
-# Test coverage
-.nyc_output/
+# OS
+.DS_Store
+Thumbs.db
+
+# Coverage
 coverage/
+htmlcov/
+*.coverage
 
-# Vite/Vitest
-.vite/
-.vitest/
-
-# Cache directories
-.cache/
+# MyPy
 .mypy_cache/
+
+# Pytest
 .pytest_cache/
+
+# Gradle
+.gradle/
+
+# Compiled
+*.class
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.a
+*.out
 ```
