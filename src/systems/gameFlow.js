@@ -63,7 +63,7 @@ class GameFlow {
     }
 
     pauseGame() {
-        if (this.state !== GameFlow.STATE.PLAYING) return;
+        if (this.state !== GameFlow.STATE.PLAYING) {return;}
         
         this.state = GameFlow.STATE.PAUSED;
         document.exitPointerLock();
@@ -72,7 +72,7 @@ class GameFlow {
     }
 
     resumeGame() {
-        if (this.state !== GameFlow.STATE.PAUSED) return;
+        if (this.state !== GameFlow.STATE.PAUSED) {return;}
         
         this.state = GameFlow.STATE.PLAYING;
         document.body.requestPointerLock();
@@ -197,7 +197,7 @@ class GameFlow {
     }
 
     saveGame() {
-        if (!this.isPlaying()) return null;
+        if (!this.isPlaying()) {return null;}
         
         const saveData = {
             state: this.state,
@@ -221,7 +221,7 @@ class GameFlow {
     loadGame() {
         try {
             const saved = localStorage.getItem('proshot_save');
-            if (!saved) return null;
+            if (!saved) {return null;}
             
             const data = JSON.parse(saved);
             

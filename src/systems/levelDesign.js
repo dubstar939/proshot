@@ -194,12 +194,12 @@ class LevelDesignSystem {
      * Unload current level
      */
     unloadCurrentLevel() {
-        if (!this.currentLevel) return;
+        if (!this.currentLevel) {return;}
         
         // Remove level-specific objects
         for (const [id, object] of this.levelObjects) {
             this.scene.remove(object);
-            if (object.geometry) object.geometry.dispose();
+            if (object.geometry) {object.geometry.dispose();}
             if (object.material) {
                 if (Array.isArray(object.material)) {
                     object.material.forEach(m => m.dispose());

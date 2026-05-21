@@ -41,8 +41,8 @@ function setupControls(camera, playerVelocity, playerCollider, playerController,
   
   // Mouse buttons for shooting and ADS
   document.body.addEventListener("mousedown", (event) => {
-    if (document.pointerLockElement !== document.body) return;
-    if (gameManager.getCurrentState() !== 'playing') return;
+    if (document.pointerLockElement !== document.body) {return;}
+    if (gameManager.getCurrentState() !== 'playing') {return;}
     
     if (event.button === 0) {
       // Left click - fire weapon
@@ -56,16 +56,16 @@ function setupControls(camera, playerVelocity, playerCollider, playerController,
   
   // Keyboard controls
   function applyControls(deltaTime) {
-    if (!playerController) return;
+    if (!playerController) {return;}
     
     // Movement input
     let moveX = 0;
     let moveY = 0;
     
-    if (keyStates["KeyW"]) moveY = 1;
-    if (keyStates["KeyS"]) moveY = -1;
-    if (keyStates["KeyA"]) moveX = -1;
-    if (keyStates["KeyD"]) moveX = 1;
+    if (keyStates["KeyW"]) {moveY = 1;}
+    if (keyStates["KeyS"]) {moveY = -1;}
+    if (keyStates["KeyA"]) {moveX = -1;}
+    if (keyStates["KeyD"]) {moveX = 1;}
     
     // Normalize diagonal movement
     const length = Math.sqrt(moveX * moveX + moveY * moveY);
@@ -121,8 +121,8 @@ function setupControls(camera, playerVelocity, playerCollider, playerController,
   
   // Weapon cycling with scroll wheel
   document.body.addEventListener("wheel", (event) => {
-    if (document.pointerLockElement !== document.body) return;
-    if (gameManager.getCurrentState() !== 'playing') return;
+    if (document.pointerLockElement !== document.body) {return;}
+    if (gameManager.getCurrentState() !== 'playing') {return;}
     
     if (event.deltaY > 0) {
       weaponManager.cycleWeapon(1);

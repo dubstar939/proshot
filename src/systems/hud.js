@@ -133,7 +133,7 @@ export class HUDSystem {
         // Screen flash red
         this.lowHealthOverlay.style.opacity = this.health < 30 ? '0.6' : '0.2';
         setTimeout(() => {
-            if (this.health > 30) this.lowHealthOverlay.style.opacity = '0';
+            if (this.health > 30) {this.lowHealthOverlay.style.opacity = '0';}
         }, 500);
 
         if (this.health <= 0) {
@@ -143,9 +143,9 @@ export class HUDSystem {
 
     updateHealthUI() {
         this.healthBar.style.width = `${this.health}%`;
-        if (this.health > 60) this.healthBar.style.background = '#00ff00';
-        else if (this.health > 30) this.healthBar.style.background = '#ffff00';
-        else this.healthBar.style.background = '#ff0000';
+        if (this.health > 60) {this.healthBar.style.background = '#00ff00';}
+        else if (this.health > 30) {this.healthBar.style.background = '#ffff00';}
+        else {this.healthBar.style.background = '#ff0000';}
     }
 
     showHitMarker() {

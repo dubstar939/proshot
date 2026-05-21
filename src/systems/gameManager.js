@@ -164,12 +164,12 @@ class GameManager {
   }
   
   spawnWaveEnemies(count) {
-    if (!this.enemyManager) return;
+    if (!this.enemyManager) {return;}
     
     for (let i = 0; i < count; i++) {
       // Stagger spawning slightly
       setTimeout(() => {
-        if (this.state !== GAME_STATE.PLAYING) return;
+        if (this.state !== GAME_STATE.PLAYING) {return;}
         
         const spawnPoint = this.enemyManager.getRandomEnemySpawnPoint();
         const patrolPoints = spawnPoint.patrolPoints || [];
@@ -180,7 +180,7 @@ class GameManager {
   }
   
   update(deltaTime) {
-    if (this.state !== GAME_STATE.PLAYING) return;
+    if (this.state !== GAME_STATE.PLAYING) {return;}
     
     // Update time
     this.timeElapsed += deltaTime;
@@ -213,7 +213,7 @@ class GameManager {
   }
   
   updateHUD() {
-    if (!this.uiManager) return;
+    if (!this.uiManager) {return;}
     
     // Update health
     if (this.healthSystem) {

@@ -84,9 +84,9 @@ class PlayerController {
   
   update(deltaTime, playerCollider, playerVelocity, worldOctree) {
     // Update timers
-    if (this.jumpBufferTimer > 0) this.jumpBufferTimer -= deltaTime;
-    if (this.coyoteTimer > 0) this.coyoteTimer -= deltaTime;
-    if (this.landingTimer > 0) this.landingTimer -= deltaTime;
+    if (this.jumpBufferTimer > 0) {this.jumpBufferTimer -= deltaTime;}
+    if (this.coyoteTimer > 0) {this.coyoteTimer -= deltaTime;}
+    if (this.landingTimer > 0) {this.landingTimer -= deltaTime;}
     
     // Update ground state
     const wasOnGround = this.isOnGround;
@@ -118,8 +118,8 @@ class PlayerController {
     
     // Calculate current speed based on state
     let currentSpeed = PLAYER_CONFIG.walkSpeed;
-    if (this.isSprinting && !this.isCrouching) currentSpeed = PLAYER_CONFIG.sprintSpeed;
-    if (this.isCrouching) currentSpeed = PLAYER_CONFIG.crouchSpeed;
+    if (this.isSprinting && !this.isCrouching) {currentSpeed = PLAYER_CONFIG.sprintSpeed;}
+    if (this.isCrouching) {currentSpeed = PLAYER_CONFIG.crouchSpeed;}
     
     // Apply movement input
     this.applyMovement(deltaTime, playerVelocity, currentSpeed);
@@ -167,7 +167,7 @@ class PlayerController {
   }
   
   checkOnGround(playerCollider, worldOctree) {
-    if (!playerCollider || !worldOctree) return false;
+    if (!playerCollider || !worldOctree) {return false;}
     
     // Cast a short ray downward to check for ground
     const rayStart = playerCollider.end.clone();
@@ -197,7 +197,7 @@ class PlayerController {
   }
   
   applyMovement(deltaTime, playerVelocity, speed) {
-    if (this.moveInput.lengthSq() < 0.01) return;
+    if (this.moveInput.lengthSq() < 0.01) {return;}
     
     // Get camera forward and right vectors (ignoring Y for movement)
     const forward = new THREE.Vector3();

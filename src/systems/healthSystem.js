@@ -96,7 +96,7 @@ class HealthSystem {
   }
   
   takeDamage(amount, damageType = DAMAGE_TYPES.BULLET, source = null, hitDirection = null) {
-    if (this.health <= 0) return false;
+    if (this.health <= 0) {return false;}
     
     const now = performance.now();
     this.lastDamageTime = now;
@@ -143,7 +143,7 @@ class HealthSystem {
   }
   
   heal(amount) {
-    if (this.health <= 0) return false;
+    if (this.health <= 0) {return false;}
     
     const oldHealth = this.health;
     this.health = Math.min(this.maxHealth, this.health + amount);
@@ -232,7 +232,7 @@ class HealthSystem {
   }
   
   update(deltaTime) {
-    if (this.health <= 0) return;
+    if (this.health <= 0) {return;}
     
     // Handle regeneration
     if (this.canRegen && this.health < this.maxHealth) {

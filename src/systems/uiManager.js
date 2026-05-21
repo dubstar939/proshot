@@ -340,7 +340,7 @@ class UIManager {
   bindEvents() {
     // Start button
     document.getElementById('start-button')?.addEventListener('click', () => {
-      if (this.onGameStart) this.onGameStart();
+      if (this.onGameStart) {this.onGameStart();}
     });
     
     // Resume button
@@ -360,12 +360,12 @@ class UIManager {
     
     // Quit button
     document.getElementById('quit-button')?.addEventListener('click', () => {
-      if (this.onQuitToMenu) this.onQuitToMenu();
+      if (this.onQuitToMenu) {this.onQuitToMenu();}
     });
     
     // Restart button
     document.getElementById('restart-button')?.addEventListener('click', () => {
-      if (this.onRestart) this.onRestart();
+      if (this.onRestart) {this.onRestart();}
     });
     
     // Save settings on change

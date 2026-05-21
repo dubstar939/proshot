@@ -5,6 +5,7 @@
  */
 
 import * as THREE from 'three';
+
 import { EnemyAI, EnemyManager, ENEMY_CONFIG } from './enemyAI.js';
 import { Team } from './levelDesign.js';
 
@@ -261,8 +262,12 @@ class BotCharacter {
      */
     createMesh(position) {
         const group = new THREE.Group();
-        group.position.copy(position);
-        this.position = position.clone();
+        if (position) {
+            group.position.copy(position);
+            this.position = position.clone();
+        } else {
+            this.position = new THREE.Vector3(0, 0, 0);
+        }
         
         // Body
         const bodyGeometry = new THREE.CapsuleGeometry(0.35, 1.2, 4, 8);
@@ -425,7 +430,7 @@ class BotCharacter {
      * @param {number} deltaTime - Delta time
      */
     update(deltaTime) {
-        if (!this.isAlive || !this.mesh) return;
+        if (!this.isAlive || !this.mesh) {return;}
         
         // Breathing animation
         if (this.bodyMesh) {
@@ -465,7 +470,7 @@ class BotCharacter {
      * @returns {boolean} Whether bot died
      */
     takeDamage(damage) {
-        if (!this.isAlive) return false;
+        if (!this.isAlive) {return false;}
         
         const actualDamage = damage * this.difficultyMods.damageMultiplier;
         this.health -= actualDamage;
@@ -527,7 +532,7 @@ class BotCharacter {
             
             // Dispose geometries and materials
             this.mesh.traverse(child => {
-                if (child.geometry) child.geometry.dispose();
+                if (child.geometry) {child.geometry.dispose();}
                 if (child.material) {
                     if (Array.isArray(child.material)) {
                         child.material.forEach(m => m.dispose());
@@ -752,7 +757,7 @@ class BotManager extends EnemyManager {
      * @param {THREE.Vector3} position - Respawn position
      */
     respawnBot(bot, position = null) {
-        if (!bot) return;
+        if (!bot) {return;}
         
         // Remove old bot
         bot.dispose();

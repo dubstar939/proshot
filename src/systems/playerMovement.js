@@ -112,16 +112,16 @@ export class PlayerMovement {
         // Stamina Management
         if (this.isSprinting && !this.isCrouching && (this.moveForward || this.moveBackward || this.moveLeft || this.moveRight)) {
             this.stamina = Math.max(0, this.stamina - this.config.staminaDrain * delta);
-            if (this.stamina <= 0) this.isSprinting = false;
+            if (this.stamina <= 0) {this.isSprinting = false;}
         } else if (!this.isSprinting) {
             this.stamina = Math.min(this.config.staminaMax, this.stamina + this.config.staminaRegen * delta);
         }
 
         // Determine Speed
         let speed = this.config.walkSpeed;
-        if (this.isSliding) speed = this.config.slideSpeed;
-        else if (this.isSprinting) speed = this.config.sprintSpeed;
-        else if (this.isCrouching) speed = this.config.crouchSpeed;
+        if (this.isSliding) {speed = this.config.slideSpeed;}
+        else if (this.isSprinting) {speed = this.config.sprintSpeed;}
+        else if (this.isCrouching) {speed = this.config.crouchSpeed;}
 
         // Calculate Movement Direction
         this.direction.z = Number(this.moveForward) - Number(this.moveBackward);

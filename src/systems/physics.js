@@ -1,6 +1,5 @@
 import * as THREE from "three";
-import { Capsule } from "three/examples/jsm/Addons.js";
-import { Octree } from "three/examples/jsm/Addons.js";
+import { Capsule , Octree } from "three/examples/jsm/Addons.js";
 
 const GRAVITY = 30;
 const NUM_SPHERES = 100;
@@ -12,7 +11,7 @@ let sphereIdx = 0;
 
 // Animation Variables
 let lastShotTime = 0;
-let isGunLoaded = false;
+const isGunLoaded = false;
 const clock = new THREE.Clock();
 
 function createPhysics(scene, camera, gunHolder) {
@@ -55,7 +54,7 @@ function createPhysics(scene, camera, gunHolder) {
   let isAnimationPlaying = false;
 
   function playAction(animationName, soundKey, autoIdle = true, idleDelay = 300) {
-    if (isAnimationPlaying) return;
+    if (isAnimationPlaying) {return;}
 
     isAnimationPlaying = true;
 
@@ -85,7 +84,7 @@ function createPhysics(scene, camera, gunHolder) {
   let shotCount = 0;
 
   function throwBall(camera, playerDirection) {
-    if (isReloading || isAnimationPlaying) return;
+    if (isReloading || isAnimationPlaying) {return;}
 
     const sphere = spheres[sphereIdx];
 
@@ -114,7 +113,7 @@ function createPhysics(scene, camera, gunHolder) {
   }
 
   function reloadGun() {
-    if (isReloading || isAnimationPlaying) return;
+    if (isReloading || isAnimationPlaying) {return;}
 
     isReloading = true;
     playAction("Armature|Reload", "reload", true, 3000);
@@ -122,7 +121,7 @@ function createPhysics(scene, camera, gunHolder) {
   }
 
   function updatePlayer(deltaTime, worldOctree, camera) {
-    if (!playerCollider || !playerCollider.end) return;
+    if (!playerCollider || !playerCollider.end) {return;}
 
     let damping = Math.exp(-4 * deltaTime) - 1;
 
@@ -187,7 +186,7 @@ function createPhysics(scene, camera, gunHolder) {
   }
 
   function playerSphereCollision(sphere) {
-    if (!playerCollider) return;
+    if (!playerCollider) {return;}
 
     const center = new THREE.Vector3()
       .addVectors(playerCollider.start, playerCollider.end)

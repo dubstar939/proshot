@@ -168,7 +168,7 @@ export class OptimizerSystem {
    */
   returnObjectToPool(type, object) {
     const pool = this._pools.get(type);
-    if (!pool) return;
+    if (!pool) {return;}
     pool.release(object);
   }
   
@@ -218,7 +218,7 @@ export class OptimizerSystem {
     if (this._lodAccumulator >= this._lodUpdateInterval) {
       this._lodAccumulator = 0;
       for (const lodGroup of this._lodGroups) {
-        if (lodGroup.update) lodGroup.update();
+        if (lodGroup.update) {lodGroup.update();}
       }
     }
   }
@@ -227,7 +227,7 @@ export class OptimizerSystem {
    * Update frustum culling matrices
    */
   _updateFrustumCulling() {
-    if (!this.camera) return;
+    if (!this.camera) {return;}
     
     this._projectionMatrix.multiplyMatrices(
       this.camera.projectionMatrix,
@@ -283,7 +283,7 @@ export class OptimizerSystem {
    */
   _checkMemory() {
     const now = performance.now();
-    if (now - this._lastMemoryCheck < this._memoryCheckInterval) return;
+    if (now - this._lastMemoryCheck < this._memoryCheckInterval) {return;}
     
     this._lastMemoryCheck = now;
     
@@ -312,10 +312,10 @@ export class OptimizerSystem {
    * Auto-adjust quality based on FPS performance
    */
   _autoAdjustQuality(deltaTime) {
-    if (!this._autoAdjustQuality) return;
+    if (!this._autoAdjustQuality) {return;}
     
     this._adjustmentCooldown -= deltaTime;
-    if (this._adjustmentCooldown > 0) return;
+    if (this._adjustmentCooldown > 0) {return;}
     
     const avgFPS = this._getAverageFPS();
     
@@ -363,7 +363,7 @@ export class OptimizerSystem {
    * Get average FPS over history
    */
   _getAverageFPS() {
-    if (this._fpsHistory.length === 0) return this.fps;
+    if (this._fpsHistory.length === 0) {return this.fps;}
     return this._fpsHistory.reduce((a, b) => a + b, 0) / this._fpsHistory.length;
   }
   
@@ -379,11 +379,11 @@ export class OptimizerSystem {
    */
   setUIVisibility(elementId, visible) {
     const cached = this._visibilityCache.get(elementId);
-    if (cached === visible) return;
+    if (cached === visible) {return;}
     
     this._visibilityCache.set(elementId, visible);
     const el = document.getElementById(elementId);
-    if (el) el.style.display = visible ? 'block' : 'none';
+    if (el) {el.style.display = visible ? 'block' : 'none';}
   }
   
   /**
@@ -404,7 +404,7 @@ export class OptimizerSystem {
       requestAnimationFrame(() => {
         for (const change of changes) {
           const el = document.getElementById(change.id);
-          if (el) el.style.display = change.visible ? 'block' : 'none';
+          if (el) {el.style.display = change.visible ? 'block' : 'none';}
         }
       });
     }

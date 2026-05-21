@@ -60,22 +60,22 @@ export class WeaponSystem {
     }
 
     switchWeapon(id) {
-        if (this.isReloading || !WEAPON_DB[id]) return;
+        if (this.isReloading || !WEAPON_DB[id]) {return;}
         this.currentWeaponId = id;
         window.dispatchEvent(new CustomEvent('weaponSwitch', { detail: { weapon: WEAPON_DB[id] } }));
     }
 
     initInput() {
         const onMouseDown = (e) => {
-            if (e.button === 0) this.isFiring = true;
-            if (e.button === 2) this.toggleADS(true);
+            if (e.button === 0) {this.isFiring = true;}
+            if (e.button === 2) {this.toggleADS(true);}
         };
         const onMouseUp = (e) => {
-            if (e.button === 0) this.isFiring = false;
-            if (e.button === 2) this.toggleADS(false);
+            if (e.button === 0) {this.isFiring = false;}
+            if (e.button === 2) {this.toggleADS(false);}
         };
         const onKeyDown = (e) => {
-            if (e.key === 'r') this.reload();
+            if (e.key === 'r') {this.reload();}
             if (e.key >= '1' && e.key <= '5') {
                 const ids = ['pistol', 'rifle', 'shotgun', 'sniper', 'rocket'];
                 this.switchWeapon(ids[parseInt(e.key)-1]);
@@ -99,7 +99,7 @@ export class WeaponSystem {
 
     reload() {
         const w = this.weapons[this.currentWeaponId];
-        if (this.isReloading || w.currentMag === w.magSize || w.currentReserve <= 0) return;
+        if (this.isReloading || w.currentMag === w.magSize || w.currentReserve <= 0) {return;}
         
         this.isReloading = true;
         window.dispatchEvent(new CustomEvent('reloadStart'));
@@ -116,9 +116,9 @@ export class WeaponSystem {
 
     fire(delta, time) {
         const w = this.weapons[this.currentWeaponId];
-        if (this.isReloading || this.isADS && w.id === 'rocket') return; // No firing while ADS for rocket (optional)
+        if (this.isReloading || this.isADS && w.id === 'rocket') {return;} // No firing while ADS for rocket (optional)
         
-        if (time - w.lastFire < w.fireRate) return;
+        if (time - w.lastFire < w.fireRate) {return;}
         if (w.currentMag <= 0) {
             this.reload();
             return;

@@ -1,4 +1,4 @@
-# ESLint Configuration for Three.js FPS Game
+// ESLint Configuration for Three.js FPS Game
 
 module.exports = {
   env: {

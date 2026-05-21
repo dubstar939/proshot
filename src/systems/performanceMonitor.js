@@ -101,7 +101,7 @@ export class PerformanceMonitor {
    * Create performance overlay DOM
    */
   _createOverlay() {
-    if (this._overlay) return;
+    if (this._overlay) {return;}
     
     this._overlay = document.createElement('div');
     this._overlay.style.cssText = `
@@ -140,7 +140,7 @@ export class PerformanceMonitor {
    * Update metrics - call every frame
    */
   update(deltaTime) {
-    if (!this.enabled) return;
+    if (!this.enabled) {return;}
     
     this._frameCount++;
     const currentTime = performance.now();
@@ -234,7 +234,7 @@ export class PerformanceMonitor {
    * Update overlay display
    */
   _updateOverlay() {
-    if (!this._overlay) return;
+    if (!this._overlay) {return;}
     
     const fpsColor = this.metrics.fps >= 50 ? '#0f0' : 
                      this.metrics.fps >= 30 ? '#ff0' : '#f00';
@@ -260,7 +260,7 @@ export class PerformanceMonitor {
       
       // Remove old extra info if exists
       const oldExtra = this._overlay.querySelector('.extra-info');
-      if (oldExtra) oldExtra.remove();
+      if (oldExtra) {oldExtra.remove();}
       
       extraInfo.className = 'extra-info';
       this._overlay.appendChild(extraInfo);

@@ -255,7 +255,7 @@ class WorldSystem {
   }
   
   toggleDoor(door) {
-    if (door.isMoving) return;
+    if (door.isMoving) {return;}
     
     door.isOpen = !door.isOpen;
     door.isMoving = true;
@@ -405,7 +405,7 @@ class WorldSystem {
     const time = performance.now() * 0.001;
     
     for (const interactable of this.interactables) {
-      if (interactable.collected) continue;
+      if (interactable.collected) {continue;}
       
       // Bobbing animation
       if (interactable.type === INTERACTABLE_TYPES.HEALTH_PACK ||
@@ -445,7 +445,7 @@ class WorldSystem {
     const gravity = 30;
     
     for (const obj of this.physicsObjects) {
-      if (obj.resting) continue;
+      if (obj.resting) {continue;}
       
       // Apply gravity
       obj.velocity.y -= gravity * deltaTime;
@@ -500,7 +500,7 @@ class WorldSystem {
   
   processLevelNode(node) {
     node.traverse((child) => {
-      if (!child.isMesh) return;
+      if (!child.isMesh) {return;}
       
       // Check for spawn point markers
       if (child.name.includes('spawn_player')) {

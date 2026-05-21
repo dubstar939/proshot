@@ -60,7 +60,7 @@ class WorldSystem {
     _initInput() {
         // Bind interaction key (E)
         document.addEventListener('keydown', (e) => {
-            if (e.code === 'KeyE') this.tryInteract();
+            if (e.code === 'KeyE') {this.tryInteract();}
         });
     }
 
@@ -151,7 +151,7 @@ class WorldSystem {
         const playerBox = new THREE.Box3().setFromObject(this.player.mesh);
         
         this.triggers.forEach(trigger => {
-            if (!trigger.active) return;
+            if (!trigger.active) {return;}
             
             const triggerBox = new THREE.Box3().setFromObject(trigger.mesh);
             if (playerBox.intersectsBox(triggerBox)) {
@@ -167,7 +167,7 @@ class WorldSystem {
     }
 
     tryInteract() {
-        if (!this.currentInteractable) return;
+        if (!this.currentInteractable) {return;}
 
         const { id, data } = this.currentInteractable;
         
@@ -196,8 +196,8 @@ class WorldSystem {
             
             // Mock animation step
             const animateDoor = () => {
-                if (data.state !== 'opening') return;
-                if (axis === 'y') data.mesh.rotation.y += 0.05;
+                if (data.state !== 'opening') {return;}
+                if (axis === 'y') {data.mesh.rotation.y += 0.05;}
                 if (Math.abs(data.mesh.rotation.y - targetRot) < 0.05) {
                     data.mesh.rotation.y = targetRot;
                     data.state = 'open';
@@ -209,8 +209,8 @@ class WorldSystem {
         } else if (data.state === 'open') {
             data.state = 'closing';
              const animateDoor = () => {
-                if (data.state !== 'closing') return;
-                if (data.mesh.rotation.y > 0) data.mesh.rotation.y -= 0.05;
+                if (data.state !== 'closing') {return;}
+                if (data.mesh.rotation.y > 0) {data.mesh.rotation.y -= 0.05;}
                 else {
                     data.mesh.rotation.y = 0;
                     data.state = 'closed';
@@ -233,7 +233,7 @@ class WorldSystem {
     }
 
     activateSwitch(data) {
-        if (data.state === 'active') return;
+        if (data.state === 'active') {return;}
         data.state = 'active';
         data.mesh.material.emissive.setHex(0x00ff00);
         window.dispatchEvent(new CustomEvent('proshot:switch', { detail: { id: data.mesh.uuid } }));

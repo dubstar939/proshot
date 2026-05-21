@@ -1,5 +1,5 @@
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import GUI from "lil-gui";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 function loadWorld(scene, worldOctree) {
   const loader = new GLTFLoader().setPath("./models/");
@@ -11,7 +11,7 @@ function loadWorld(scene, worldOctree) {
       if (child.isMesh) {
         child.castShadow = true;
         child.receiveShadow = true;
-        if (child.material.map) child.material.map.anisotropy = 4;
+        if (child.material.map) {child.material.map.anisotropy = 4;}
       }
     });
 

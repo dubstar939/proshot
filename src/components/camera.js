@@ -2,7 +2,7 @@ import { PerspectiveCamera, Object3D, AnimationMixer } from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 let gunMixer = null; // Global mixer for animations
-let animations = {}; // Store animations
+const animations = {}; // Store animations
 
 function createCamera(scene) {
   const camera = new PerspectiveCamera(

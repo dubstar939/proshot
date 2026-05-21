@@ -82,16 +82,30 @@ vi.mock('three', () => {
       userData: {},
       traverse: vi.fn(),
     })),
-    Group: vi.fn().mockImplementation(() => ({
-      add: vi.fn(),
-      remove: vi.fn(),
-      position: mockVector3(),
-      rotation: mockEuler(),
-      scale: mockVector3(1, 1, 1),
-      userData: {},
-      children: [],
-      traverse: vi.fn((cb) => {}),
-    })),
+    Group: vi.fn().mockImplementation(() => {
+      const mockPos = {
+        x: 0, y: 0, z: 0,
+        set: vi.fn(function(nx, ny, nz) { this.x = nx; this.y = ny; this.z = nz; return this; }),
+        copy: vi.fn(function(v) { this.x = v.x; this.y = v.y; this.z = v.z; return this; }),
+        clone: vi.fn(function() { return { x: this.x, y: this.y, z: this.z }; }),
+        add: vi.fn(function(v) { this.x += v.x; this.y += v.y; this.z += v.z; return this; }),
+        multiplyScalar: vi.fn(function(s) { this.x *= s; this.y *= s; this.z *= s; return this; }),
+        normalize: vi.fn(function() { return this; }),
+        length: vi.fn(function() { return Math.sqrt(this.x**2 + this.y**2 + this.z**2); }),
+        distanceTo: vi.fn(function(v) { return Math.sqrt((this.x-v.x)**2 + (this.y-v.y)**2 + (this.z-v.z)**2); }),
+      };
+      return {
+        add: vi.fn(),
+        remove: vi.fn(),
+        position: mockPos,
+        rotation: { x: 0, y: 0, z: 0, order: 'YXZ' },
+        scale: { x: 1, y: 1, z: 1 },
+        userData: {},
+        children: [],
+        traverse: vi.fn((cb) => {}),
+        uuid: Math.random().toString(36).substring(7),
+      };
+    }),
     Mesh: vi.fn().mockImplementation(() => ({
       castShadow: false,
       receiveShadow: false,

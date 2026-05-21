@@ -60,8 +60,8 @@ export class AudioSystem {
         this.scene.add(this.ambientMusic.getSource());
         this.scene.add(this.combatMusic.getSource());
         
-        if(this.ambientMusic.context) this.ambientMusic.play();
-        if(this.combatMusic.context) this.combatMusic.play();
+        if(this.ambientMusic.context) {this.ambientMusic.play();}
+        if(this.combatMusic.context) {this.combatMusic.play();}
     }
 
     /**
@@ -71,12 +71,12 @@ export class AudioSystem {
         const surfaceName = this.surfaceMaterials[surfaceMaterialId] || 'concrete';
         const sounds = this.footstepSounds[surfaceName];
         
-        if (!sounds || sounds.length === 0) return;
+        if (!sounds || sounds.length === 0) {return;}
 
         const soundIdx = Math.floor(Math.random() * sounds.length);
         const buffer = sounds[soundIdx];
         
-        if (!buffer) return;
+        if (!buffer) {return;}
 
         const sound = new THREE.Audio(this.listener);
         sound.setBuffer(buffer);
@@ -128,7 +128,7 @@ export class AudioSystem {
      * G4: Toggle Combat Music Layer
      */
     setCombatMode(active) {
-        if (this.isCombat === active) return;
+        if (this.isCombat === active) {return;}
         this.isCombat = active;
 
         const targetAmbientVol = active ? 0.2 : 0.6;
@@ -150,7 +150,7 @@ export class AudioSystem {
             
             audioObj.setVolume(currentVol);
             
-            if (progress < 1) requestAnimationFrame(animate);
+            if (progress < 1) {requestAnimationFrame(animate);}
         };
         animate();
     }

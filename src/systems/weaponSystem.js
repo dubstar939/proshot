@@ -242,7 +242,7 @@ class Weapon {
   }
   
   fire(currentTime) {
-    if (this.isReloading) return false;
+    if (this.isReloading) {return false;}
     if (this.currentMagazine <= 0) {
       this.playEmptySound();
       return false;
@@ -449,9 +449,9 @@ class Weapon {
   }
   
   startReload() {
-    if (this.isReloading) return false;
-    if (this.currentMagazine >= this.data.magazineSize) return false;
-    if (this.reservedAmmo <= 0) return false;
+    if (this.isReloading) {return false;}
+    if (this.currentMagazine >= this.data.magazineSize) {return false;}
+    if (this.reservedAmmo <= 0) {return false;}
     
     this.isReloading = true;
     this.playReloadSound();
@@ -551,7 +551,7 @@ class WeaponManager {
   }
   
   addWeapon(weaponId) {
-    if (this.weapons[weaponId]) return;
+    if (this.weapons[weaponId]) {return;}
     
     const weapon = new Weapon(
       weaponId,
@@ -564,9 +564,9 @@ class WeaponManager {
   }
   
   switchToWeapon(weaponId) {
-    if (this.switchingWeapon) return false;
-    if (!this.weapons[weaponId]) return false;
-    if (weaponId === this.currentWeaponId) return false;
+    if (this.switchingWeapon) {return false;}
+    if (!this.weapons[weaponId]) {return false;}
+    if (weaponId === this.currentWeaponId) {return false;}
     
     this.switchingWeapon = true;
     
@@ -590,17 +590,17 @@ class WeaponManager {
   }
   
   fire(currentTime) {
-    if (!this.currentWeaponId || this.switchingWeapon) return false;
+    if (!this.currentWeaponId || this.switchingWeapon) {return false;}
     return this.weapons[this.currentWeaponId].fire(currentTime);
   }
   
   reload() {
-    if (!this.currentWeaponId) return false;
+    if (!this.currentWeaponId) {return false;}
     return this.weapons[this.currentWeaponId].startReload();
   }
   
   toggleADS() {
-    if (!this.currentWeaponId) return false;
+    if (!this.currentWeaponId) {return false;}
     return this.weapons[this.currentWeaponId].toggleADS();
   }
   
@@ -633,12 +633,12 @@ class WeaponManager {
   }
   
   getAmmoInfo() {
-    if (!this.currentWeaponId) return null;
+    if (!this.currentWeaponId) {return null;}
     return this.weapons[this.currentWeaponId].getAmmoInfo();
   }
   
   getCurrentWeaponName() {
-    if (!this.currentWeaponId) return '';
+    if (!this.currentWeaponId) {return '';}
     return this.weapons[this.currentWeaponId].getName();
   }
   

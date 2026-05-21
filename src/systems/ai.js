@@ -89,7 +89,7 @@ class EnemyAI {
     }
 
     update(delta, time) {
-        if (this.state === AI_STATE.DEAD) return;
+        if (this.state === AI_STATE.DEAD) {return;}
         
         const distToPlayer = this.mesh.position.distanceTo(this.player.position);
         const hasLOS = this.checkLineOfSight();
@@ -102,7 +102,7 @@ class EnemyAI {
                 this.patrol(delta);
             } else {
                 // Randomly start patrolling
-                if (Math.random() < 0.01) this.state = AI_STATE.PATROL;
+                if (Math.random() < 0.01) {this.state = AI_STATE.PATROL;}
             }
         } else if (this.state === AI_STATE.CHASE) {
             if (distToPlayer > this.detectionRange * 1.5 || !hasLOS) {
@@ -290,8 +290,8 @@ class AISystem {
         const enemy = new EnemyAI(this.scene, this.player, difficulty);
         
         // Wire system references
-        if (this.weapons) enemy.setWeapons(this.weapons);
-        if (this.gameFlow) enemy.setGameFlow(this.gameFlow);
+        if (this.weapons) {enemy.setWeapons(this.weapons);}
+        if (this.gameFlow) {enemy.setGameFlow(this.gameFlow);}
         
         this.enemies.push(enemy);
         return enemy;
@@ -303,7 +303,7 @@ class AISystem {
      * @param {number} elapsedTime - Total elapsed time
      */
     update(deltaTime, elapsedTime) {
-        if (!this.isActive) return;
+        if (!this.isActive) {return;}
         
         // Spawn enemies for current wave
         if (this.isWaveActive) {

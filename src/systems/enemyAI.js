@@ -122,7 +122,7 @@ class EnemyAI {
   }
   
   updateHealthBar() {
-    if (!this.healthBar) return;
+    if (!this.healthBar) {return;}
     
     const healthPercent = this.health / this.maxHealth;
     this.healthBar.scale.x = healthPercent;
@@ -144,7 +144,7 @@ class EnemyAI {
   }
   
   takeDamage(damage, point, normal) {
-    if (this.isDead) return;
+    if (this.isDead) {return;}
     
     this.health -= damage;
     this.updateHealthBar();
@@ -207,18 +207,18 @@ class EnemyAI {
   dispose() {
     if (this.mesh) {
       this.scene.remove(this.mesh);
-      if (this.mesh.geometry) this.mesh.geometry.dispose();
-      if (this.mesh.material) this.mesh.material.dispose();
+      if (this.mesh.geometry) {this.mesh.geometry.dispose();}
+      if (this.mesh.material) {this.mesh.material.dispose();}
     }
   }
   
   update(deltaTime, worldOctree) {
-    if (this.isDead) return;
+    if (this.isDead) {return;}
     
     // Update timers
-    if (this.patrolWaitTimer > 0) this.patrolWaitTimer -= deltaTime;
-    if (this.searchTimer > 0) this.searchTimer -= deltaTime;
-    if (this.attackTimer > 0) this.attackTimer -= deltaTime;
+    if (this.patrolWaitTimer > 0) {this.patrolWaitTimer -= deltaTime;}
+    if (this.searchTimer > 0) {this.searchTimer -= deltaTime;}
+    if (this.attackTimer > 0) {this.attackTimer -= deltaTime;}
     
     // State machine
     switch (this.state) {
@@ -383,12 +383,12 @@ class EnemyAI {
   }
   
   moveToTarget(deltaTime, speed) {
-    if (!this.targetPosition) return;
+    if (!this.targetPosition) {return;}
     
     const direction = new THREE.Vector3().subVectors(this.targetPosition, this.position);
     const distance = direction.length();
     
-    if (distance < 0.5) return;
+    if (distance < 0.5) {return;}
     
     direction.normalize();
     
@@ -426,14 +426,14 @@ class EnemyAI {
     const distance = direction.length();
     
     // Too far?
-    if (distance > ENEMY_CONFIG.detectRange) return false;
+    if (distance > ENEMY_CONFIG.detectRange) {return false;}
     
     // Behind enemy?
     direction.normalize();
     const forward = new THREE.Vector3(0, 0, 1).applyAxisAngle(new THREE.Vector3(0, 1, 0), this.mesh.rotation.y);
     const dotProduct = forward.dot(direction);
     
-    if (dotProduct < Math.cos(ENEMY_CONFIG.fieldOfView / 2)) return false;
+    if (dotProduct < Math.cos(ENEMY_CONFIG.fieldOfView / 2)) {return false;}
     
     // Raycast for line of sight
     this.raycaster.set(this.position.clone().add(new THREE.Vector3(0, 0.8, 0)), direction);
@@ -503,7 +503,7 @@ class EnemyManager {
   }
   
   spawnFromPool() {
-    if (this.spawnPoints.length === 0) return null;
+    if (this.spawnPoints.length === 0) {return null;}
     
     const spawnPoint = this.spawnPoints[Math.floor(Math.random() * this.spawnPoints.length)];
     
