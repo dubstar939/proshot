@@ -351,7 +351,7 @@ class ProShotGame {
         const { scene, camera } = this;
         
         // Layer 1: Infrastructure (no dependencies)
-        this.systems.optimizer = new OptimizerSystem(scene);
+        this.systems.optimizer = new OptimizerSystem(scene, camera);
         this.systems.audio = new AudioSystem(camera, scene);
         this.systems.hud = new HUDSystem();
         

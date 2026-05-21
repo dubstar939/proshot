@@ -1,14 +1,10 @@
 ```
-# Dependencies
-node_modules/
+# Backup files
+*.js.bak
 
-# Build artifacts
-dist/
-build/
-target/
-
-# Logs
+# Logs and temp files
 *.log
+*.tmp
 
 # Environment
 .env
@@ -19,42 +15,66 @@ target/
 .vscode/
 .idea/
 
-# Python
+# Dependencies
+node_modules/
+.venv/
+venv/
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
 
-# Temporary files
-*.tmp
-*.swp
-*.swo
+# Build artifacts
+dist/
+build/
+target/
 
-# OS
+# OS generated files
 .DS_Store
 Thumbs.db
 
-# Coverage
+# Coverage reports
 coverage/
 htmlcov/
-*.coverage
+.coverage
 
-# MyPy
+# Python specific
+*.pyc
+__pycache__/
+.pytest_cache/
 .mypy_cache/
 
-# Pytest
-.pytest_cache/
+# JavaScript/Node specific
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Gradle
-.gradle/
+# IDE specific
+.vscode/
+.idea/
+*.swp
+*.swo
 
-# Compiled
-*.class
-*.o
-*.obj
-*.exe
-*.dll
-*.so
-*.a
-*.out
+# Compression files
+*.zip
+*.gz
+*.tar
+*.tgz
+*.bz2
+*.xz
+*.7z
+*.rar
+*.zst
+*.lz4
+*.lzh
+*.cab
+*.arj
+*.rpm
+*.deb
+*.Z
+*.lz
+*.lzo
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.tar.zst
 ```
